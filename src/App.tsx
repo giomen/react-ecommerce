@@ -1,25 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect } from 'react';
 import './App.css';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Home from './components/Home';
+import { Route, Routes } from 'react-router-dom';
+import Product from './components/Product';
+import ProductList from './components/ProductList';
 
 function App() {
+  useEffect(() => {});
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header title="titolo" description="description" />
+      <Routes>
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/collections/:id" element={<ProductList />}></Route>
+        <Route path="/products/:id" element={<Product />}></Route>
+        <Route
+          path="*"
+          element={
+            <main style={{ padding: '1rem' }}>
+              <p>There's nothing here!</p>
+            </main>
+          }
+        />
+      </Routes>
+      <Footer />
+    </>
   );
 }
 
