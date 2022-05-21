@@ -48,7 +48,10 @@ const ProductList = () => {
               <div className="mt-4 flex justify-between">
                 <div>
                   <h3 className="text-sm text-gray-700">
-                    <Link to={`/products/${product.id}`}>
+                    <Link
+                      to={`/products/${product.id}`}
+                      state={{ collectionId: id }}
+                    >
                       <span aria-hidden="true" className="absolute inset-0" />
                       {product.title}
                     </Link>

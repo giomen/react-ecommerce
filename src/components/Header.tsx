@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useAppSelector } from '../hooks';
 import Login from './Login';
 
 export interface HeaderProps {
@@ -9,6 +10,7 @@ export interface HeaderProps {
 
 const Header = (props: HeaderProps) => {
   const { title, description } = props;
+  const cartItems = useAppSelector((state) => state.cart.items);
 
   return (
     <header>
@@ -36,7 +38,7 @@ const Header = (props: HeaderProps) => {
                 to="/"
                 className="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900"
               >
-                Home
+                Collezioni
               </NavLink>
             </div>
             <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
@@ -46,6 +48,11 @@ const Header = (props: HeaderProps) => {
               >
                 Carrello
               </NavLink>
+              {cartItems.length > 0 && (
+                <span className="ml-2 inline-flex items-center justify-center px-2 py-1 mr-2 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                  {cartItems.length}
+                </span>
+              )}
               <Login />
             </div>
           </div>

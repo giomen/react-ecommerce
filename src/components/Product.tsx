@@ -11,8 +11,11 @@ import { ProductModel } from '../shared/models/products.model';
 import { addItemToCart } from '../store/features/cart/cartSlice';
 import { getProduct } from '../store/features/product/productSlice';
 import Loader from './Loader/Loader';
+import { useLocation } from 'react-router-dom';
 
 const Product = () => {
+  const location = useLocation();
+  const { collectionId }: any = location.state;
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
@@ -37,7 +40,7 @@ const Product = () => {
 
     const quantity = existingItem ? existingItem.quantity! + 1 : 1;
 
-    dispatch(addItemToCart({ ...item, quantity }));
+    dispatch(addItemToCart({ ...item, quantity, collectionId }));
   };
 
   return (
@@ -45,7 +48,7 @@ const Product = () => {
       {Object.keys(product).length > 0 ? (
         <div className="pt-6">
           <nav aria-label="Breadcrumb">
-            <ol className="max-w-2xl mx-auto px-4 flex items-center space-x-2 sm:px-6 lg:max-w-7xl lg:px-8">
+            <ol className="max-w-2xl mx-auto px-4 flex items-center space-x-2 sm:px-6 lg:max-w-7xl">
               <li>
                 <div className="flex items-center">
                   <NavLink
@@ -74,15 +77,7 @@ const Product = () => {
             </ol>
           </nav>
 
-          {/* Image gallery */}
-          <div className="mt-6 max-w-2xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-3 lg:gap-x-8">
-            <div className="hidden aspect-w-3 aspect-h-4 rounded-lg overflow-hidden lg:block">
-              <img
-                src={product.images[0].src}
-                alt={product.images[0].alt}
-                className="w-full h-full object-center object-cover"
-              />
-            </div>
+          <div className="mt-6 max-w-2xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-3 lg:gap-x-8  lg:px-8 lg:grid-rows-[auto,auto,1fr]">
             <div className="aspect-w-4 aspect-h-5 sm:rounded-lg sm:overflow-hidden lg:aspect-w-3 lg:aspect-h-4">
               <img
                 src={product.image.src}
@@ -90,34 +85,34 @@ const Product = () => {
                 className="w-full h-full object-center object-cover"
               />
             </div>
+            <div></div>
+            {/* Options */}
+            <div className="mt-4 lg:mt-0 lg:row-span-3">
+              <h2 className="sr-only">Product information</h2>
+              <p className="text-3xl text-gray-900">
+                €{product.variants[0].price}
+              </p>
+
+              <div className="mt-10">
+                <button
+                  onClick={() => handleAddItemToCart(product)}
+                  className="mt-10 w-full bg-indigo-500 border border-transparent py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Aggiungi al carrello
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Product info */}
-          <div className="max-w-2xl mx-auto pt-10 pb-16 px-4 sm:px-6 lg:max-w-7xl lg:pt-16 lg:pb-24 lg:px-8 lg:grid lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8">
+          <div className="max-w-2xl mx-auto pt-10 pb-16 px-4 sm:px-6 lg:max-w-7xl lg:pt-16 lg:pb-24 lg:px-8">
             <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
               <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
                 {product.title}
               </h1>
             </div>
 
-            {/* Options */}
-            <div className="mt-4 lg:mt-0 lg:row-span-3">
-              <h2 className="sr-only">Product information</h2>
-              <p className="text-3xl text-gray-900">
-                {product.variants[0].price}
-              </p>
-
-              <div className="mt-10">
-                <button
-                  onClick={() => handleAddItemToCart(product)}
-                  className="mt-10 w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Add to cart
-                </button>
-              </div>
-            </div>
-
-            <div className="py-10 lg:pt-6 lg:pb-16 lg:col-start-1 lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
+            <div className="py-10 lg:pt-6 lg:pb-16 lg:col-start-1 lg:col-span-2">
               {/* Description and details */}
               <div>
                 <h3 className="sr-only">Description</h3>

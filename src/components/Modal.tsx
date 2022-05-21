@@ -2,11 +2,34 @@
 import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { ExclamationIcon } from '@heroicons/react/outline';
+import { useEffect } from 'react';
+import { useAppDispatch } from '../hooks';
+import { ProductModel } from '../shared/models/products.model';
+import { removeItemFromCart } from '../store/features/cart/cartSlice';
 
-const Modal = () => {
+export interface ModalProps {
+  isOpen: boolean;
+  itemId: number;
+  setIsOpen: () => void;
+}
+
+const Modal = (props: ModalProps) => {
+  const { isOpen, itemId, setIsOpen } = props;
   const [open, setOpen] = useState(false);
 
   const cancelButtonRef = useRef(null);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    setOpen(isOpen);
+  }, [isOpen]);
+
+  const handleRemoveItem = () => {
+    dispatch(removeItemFromCart(itemId));
+    setIsOpen();
+    //setOpen(false);
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -53,13 +76,11 @@ const Modal = () => {
                         as="h3"
                         className="text-lg leading-6 font-medium text-gray-900"
                       >
-                        Deactivate account
+                        Rimuovi prodotto dal carrello
                       </Dialog.Title>
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">
-                          Are you sure you want to deactivate your account? All
-                          of your data will be permanently removed. This action
-                          cannot be undone.
+                          Sei sicuro di voler rimuovere gli articoli?
                         </p>
                       </div>
                     </div>
@@ -68,18 +89,18 @@ const Modal = () => {
                 <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                   <button
                     type="button"
-                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                    onClick={() => setOpen(false)}
-                  >
-                    Deactivate
-                  </button>
-                  <button
-                    type="button"
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                    onClick={() => setOpen(false)}
+                    className="mt-3 w-full inline-flex justify-center border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={() => setIsOpen()}
                     ref={cancelButtonRef}
                   >
                     Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 bg-indigo-500 text-base font-medium text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={() => handleRemoveItem()}
+                  >
+                    Rimuovi
                   </button>
                 </div>
               </Dialog.Panel>
@@ -90,3 +111,5 @@ const Modal = () => {
     </Transition.Root>
   );
 };
+
+export default Modal;

@@ -1,13 +1,13 @@
-import React from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { ProductModel } from '../shared/models/products.model';
-import {
-  addItemToCart,
-  removeItemFromCart,
-} from '../store/features/cart/cartSlice';
+import { addItemToCart } from '../store/features/cart/cartSlice';
+import Modal from './Modal';
+import Cookies from 'js-cookie';
 
 const Cart = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
 
   const items = useAppSelector((state) => state.cart.items);
@@ -23,8 +23,11 @@ const Cart = () => {
     return partialTotal;
   });
 
-  const handleRemoveItemFromCart = (id: number) =>
-    dispatch(removeItemFromCart(id));
+  const handleModal = () => setIsOpen((oldValue) => !oldValue);
+
+  const handleRemoveItemFromCart = () => {
+    setIsOpen((oldValue) => !oldValue);
+  };
 
   const maxSelItems = useAppSelector((state) => state.cart.maxSelectableItems);
 
@@ -33,11 +36,13 @@ const Cart = () => {
     return dispatch(addItemToCart({ ...item, quantity }));
   };
 
+  console.log('cookies: ', Cookies.get());
+
   return (
-    <div className="bg-gray-100">
+    <div className="bg-white">
       <div className="container mx-auto mt-10">
-        <div className="flex shadow-md my-10">
-          <div className="w-3/4 bg-white px-10 py-10">
+        <div className="grid xs:grid-cols-1 md:grid-cols-12 my-10">
+          <div className="bg-white col-span-1 sm:col-span-1 md:col-span-9 px-10 py-10">
             <div className="flex justify-between border-b pb-8">
               <h1 className="font-semibold text-2xl">Carrello</h1>
               <h2 className="font-semibold text-2xl">
@@ -75,14 +80,17 @@ const Cart = () => {
                           />
                         </div>
                         <div className="flex flex-col justify-between ml-4 flex-grow">
-                          <span className="font-bold text-sm">
+                          <Link
+                            to={`/products/${item.id}`}
+                            state={{ collectionId: item.collectionId }}
+                          >
                             {item.title}
-                          </span>
+                          </Link>
                           <span className="text-red-500 text-xs">
                             {item.vendor}
                           </span>
                           <span
-                            onClick={() => handleRemoveItemFromCart(item.id)}
+                            onClick={() => handleRemoveItemFromCart()}
                             className="cursor-pointer font-semibold hover:text-red-500 text-gray-500 text-xs"
                           >
                             Rimuovi
@@ -105,10 +113,14 @@ const Cart = () => {
                       <span className="text-center w-1/5 font-semibold text-sm">
                         €{item.variants[0].price}
                       </span>
-                      quantità{item.quantity}
                       <span className="text-center w-1/5 font-semibold text-sm">
                         (x {item.quantity}) €{calculatePrice(item)}
                       </span>
+                      <Modal
+                        isOpen={isOpen}
+                        itemId={item.id}
+                        setIsOpen={handleModal}
+                      />
                     </div>
                   ))}
                 </div>
@@ -117,7 +129,7 @@ const Cart = () => {
               )}
             </div>
             <Link
-              to="'/"
+              to="/"
               className="flex font-semibold text-indigo-600 text-sm mt-10"
             >
               <svg
@@ -129,7 +141,10 @@ const Cart = () => {
               Continua con gli acquisti
             </Link>
           </div>
-          <div id="summary" className="w-1/4 px-8 py-10">
+          <div
+            id="summary"
+            className="col-span-1 sm:col-span-1 md:col-span-3 px-8 py-10"
+          >
             <h1 className="font-semibold text-2xl border-b pb-8">
               Riepilogo Ordine
             </h1>

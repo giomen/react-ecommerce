@@ -32,7 +32,7 @@ const Home = () => {
             </span>
           </h1>
         </div>
-        <div className="mt-6 grid place-items-center grid-flow-col xl:gap-x-8">
+        <div className="mt-6 grid place-items-center grid-flow-col sm:gap-4 xl:gap-x-8">
           {collections.length > 0 ? (
             collections.map((item: CollectionListing) => (
               <div key={item.collection_id} className="group relative">

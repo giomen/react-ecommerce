@@ -25,7 +25,6 @@ export const cartSlice = createSlice({
     },
     addItemToCart: (state: CartState, actions: PayloadAction<ProductModel>) => {
       const newItem = actions.payload;
-      console.log('quantity: ', newItem.quantity);
       const existItem = state.items.find((item) => item.id === newItem.id);
 
       const cartItems = existItem
@@ -33,15 +32,14 @@ export const cartSlice = createSlice({
             item.title === existItem.title ? newItem : item
           )
         : [...state.items, newItem];
-      console.log('cartItems: ', cartItems);
-      Cookies.set('cartItems', JSON.stringify(cartItems));
+      Cookies.set('cartItems', JSON.stringify(cartItems), { expires: 1 });
       state.items = cartItems;
     },
     removeItemFromCart: (state: CartState, actions: PayloadAction<number>) => {
       const cartItems = state.items.filter(
         (item) => item.id !== actions.payload
       );
-      Cookies.set('cartItems', JSON.stringify(cartItems));
+      Cookies.set('cartItems', JSON.stringify(cartItems), { expires: 1 });
       state.items = cartItems;
     },
     updateQuantity: (

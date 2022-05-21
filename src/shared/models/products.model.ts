@@ -18,6 +18,7 @@ export interface ProductModel {
   images: Image[];
   image: Image;
   quantity?: number;
+  collectionId: number;
 }
 
 export interface Variant {
