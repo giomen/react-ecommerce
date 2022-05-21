@@ -1,14 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Cart } from '../../../shared/models/cart.model';
+import { ProductModel } from '../../../shared/models/products.model';
+import Cookies from 'js-cookie';
 
 export interface CartState {
-  items: Cart[];
+  items: ProductModel[];
+  total: number;
   logged: boolean;
+  maxSelectableItems: number;
 }
 
 const initialState = {
-  items: [],
+  items: Cookies.get('cartItems') ? JSON.parse(Cookies.get('cartItems')!) : [],
   logged: false,
+  total: 0,
+  maxSelectableItems: 10,
 } as CartState;
 
 export const cartSlice = createSlice({
@@ -18,16 +23,37 @@ export const cartSlice = createSlice({
     setLogInfo: (state: CartState, actions: PayloadAction<boolean>) => {
       state.logged = actions.payload;
     },
-    addItemToCart: (state: CartState, actions: PayloadAction<Cart>) => {
-      state.items = [...state.items, actions.payload];
+    addItemToCart: (state: CartState, actions: PayloadAction<ProductModel>) => {
+      const newItem = actions.payload;
+      console.log('quantity: ', newItem.quantity);
+      const existItem = state.items.find((item) => item.id === newItem.id);
+
+      const cartItems = existItem
+        ? state.items.map((item: ProductModel) =>
+            item.title === existItem.title ? newItem : item
+          )
+        : [...state.items, newItem];
+      console.log('cartItems: ', cartItems);
+      Cookies.set('cartItems', JSON.stringify(cartItems));
+      state.items = cartItems;
     },
-    removeItemToCart: (state: CartState, actions: PayloadAction<number>) => {
-      state.items = state.items.filter((item) => item.id !== actions.payload);
+    removeItemFromCart: (state: CartState, actions: PayloadAction<number>) => {
+      const cartItems = state.items.filter(
+        (item) => item.id !== actions.payload
+      );
+      Cookies.set('cartItems', JSON.stringify(cartItems));
+      state.items = cartItems;
+    },
+    updateQuantity: (
+      state: CartState,
+      actions: PayloadAction<{ id: number; quantity: number }>
+    ) => {
+      state.items.forEach((item) => item);
     },
   },
 });
 
-export const { setLogInfo, addItemToCart, removeItemToCart } =
+export const { setLogInfo, addItemToCart, removeItemFromCart } =
   cartSlice.actions;
 
 export default cartSlice.reducer;

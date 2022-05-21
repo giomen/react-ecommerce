@@ -1,13 +1,13 @@
 import { StatusType } from '../../../shared/models/status.enum';
 import {
-  Product,
+  ProductModel,
   ProductsResponse,
 } from '../../../shared/models/products.model';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ProductsState {
   status: StatusType;
-  products: Product[];
+  products: ProductModel[];
 }
 
 const initialState = {

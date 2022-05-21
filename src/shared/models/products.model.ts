@@ -1,4 +1,4 @@
-export interface Product {
+export interface ProductModel {
   id: number;
   title: string;
   body_html: string;
@@ -17,6 +17,7 @@ export interface Product {
   options: Option[];
   images: Image[];
   image: Image;
+  quantity?: number;
 }
 
 export interface Variant {
@@ -85,9 +86,9 @@ export interface Image2 {
 }
 
 export interface ProductResponse {
-  product: Product;
+  product: ProductModel;
 }
 
 export interface ProductsResponse {
-  products: Product[];
+  products: ProductModel[];
 }

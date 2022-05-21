@@ -6,6 +6,7 @@ import Home from './components/Home';
 import { Route, Routes } from 'react-router-dom';
 import Product from './components/Product';
 import ProductList from './components/ProductList';
+import Cart from './components/Cart';
 
 function App() {
   useEffect(() => {});
@@ -14,6 +15,7 @@ function App() {
       <Header title="titolo" description="description" />
       <Routes>
         <Route path="/" element={<Home />}></Route>
+        <Route path="/cart" element={<Cart />}></Route>
         <Route path="/collections/:id" element={<ProductList />}></Route>
         <Route path="/products/:id" element={<Product />}></Route>
         <Route

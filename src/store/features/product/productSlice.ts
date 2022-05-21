@@ -1,5 +1,5 @@
 import {
-  Product,
+  ProductModel,
   ProductResponse,
 } from '../../../shared/models/products.model';
 import { StatusType } from '../../../shared/models/status.enum';
@@ -7,7 +7,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ProductState {
   status: StatusType;
-  product: Product;
+  product: ProductModel;
 }
 
 const initialState = {
@@ -18,6 +18,7 @@ const initialState = {
 export const getProduct = createAsyncThunk(
   'product/getProduct',
   async (url: string) => {
+    console.log('prodotto: ', url);
     const response = await fetch(url);
     return (await response.json()) as ProductResponse;
   }
