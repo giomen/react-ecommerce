@@ -22,7 +22,7 @@ const Home = () => {
     dispatch(setActiveCollection(id));
 
   return (
-    <div className="bg-white">
+    <div className="bg-white lg:h-screen flex items-center">
       <div className="max-w-2xl mx-auto py-0 px-4 sm:py-8 sm:px-6 lg:max-w-7xl lg:px-8">
         <div className="sm:text-center lg:text-left">
           <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
@@ -32,10 +32,10 @@ const Home = () => {
             </span>
           </h1>
         </div>
-        <div className="mt-6 grid place-items-center grid-flow-col sm:gap-4 xl:gap-x-8">
+        <div className="mt-12 grid place-items-center lg:grid-flow-col xs:grid-col-1 xs:gap-y-8 md:grid-col-2 sm:gap-4 xl:gap-x-8">
           {collections.length > 0 ? (
             collections.map((item: CollectionListing) => (
-              <div key={item.collection_id} className="group relative">
+              <div key={item.collection_id} className="group relative w-full">
                 <div className="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80 lg:aspect-none">
                   <img
                     src={item.default_product_image.src}
