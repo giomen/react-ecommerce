@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ProductModel } from '../../../shared/models/products.model';
 import Cookies from 'js-cookie';
+import { LogInfo } from '../../../shared/models/cart.model';
+import { ProductModel } from '../../../shared/models/products.model';
 
 export interface CartState {
   items: ProductModel[];
+  toggleLogin: boolean;
   total: number;
   logged: boolean;
   maxSelectableItems: number;
@@ -11,7 +13,8 @@ export interface CartState {
 
 const initialState = {
   items: Cookies.get('cartItems') ? JSON.parse(Cookies.get('cartItems')!) : [],
-  logged: false,
+  toggleLogin: false,
+  logged: Cookies.get('logged') ? JSON.parse(Cookies.get('logged')!) : false,
   total: 0,
   maxSelectableItems: 10,
 } as CartState;
@@ -20,8 +23,16 @@ export const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    setLogInfo: (state: CartState, actions: PayloadAction<boolean>) => {
-      state.logged = actions.payload;
+    setToggleLogin: (state: CartState, actions: PayloadAction<boolean>) => {
+      state.toggleLogin = actions.payload;
+    },
+    setLogInfo: (state: CartState, actions: PayloadAction<LogInfo>) => {
+      actions.payload.logged
+        ? actions.payload.remember &&
+          Cookies.set('logged', JSON.stringify(true), { expires: 30 })
+        : Cookies.remove('logged');
+
+      state.logged = actions.payload.logged;
     },
     addItemToCart: (state: CartState, actions: PayloadAction<ProductModel>) => {
       const newItem = actions.payload;
@@ -52,7 +63,7 @@ export const cartSlice = createSlice({
   },
 });
 
-export const { setLogInfo, addItemToCart, removeItemFromCart } =
+export const { setLogInfo, addItemToCart, removeItemFromCart, setToggleLogin } =
   cartSlice.actions;
 
 export default cartSlice.reducer;

@@ -14,6 +14,8 @@ const Header = (props: HeaderProps) => {
   const { title, description } = props;
   const cartItems = useAppSelector((state) => state.cart.items);
 
+  const isLogged = useAppSelector((state) => state.cart.logged);
+
   return (
     <Disclosure as="nav" className="bg-white">
       {({ open }) => (

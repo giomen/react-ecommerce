@@ -1,10 +1,8 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { ExclamationIcon } from '@heroicons/react/outline';
-import { useEffect } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from '../hooks';
-import { ProductModel } from '../shared/models/products.model';
 import { removeItemFromCart } from '../store/features/cart/cartSlice';
 
 export interface ModalProps {
@@ -28,7 +26,6 @@ const Modal = (props: ModalProps) => {
   const handleRemoveItem = () => {
     dispatch(removeItemFromCart(itemId));
     setIsOpen();
-    //setOpen(false);
   };
 
   return (

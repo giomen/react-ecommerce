@@ -26,7 +26,16 @@ export const getProductsInCollection = createAsyncThunk(
 export const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    sortByName: (state: ProductsState) => {
+      console.log('prod: ', state.products);
+      const sortedItems = state.products.sort((a, b) =>
+        a.title.localeCompare(b.title)
+      );
+      state.products = sortedItems;
+      console.log('prodSORT: ', state.products);
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(
       getProductsInCollection.fulfilled,
@@ -37,5 +46,7 @@ export const productsSlice = createSlice({
     );
   },
 });
+
+export const { sortByName } = productsSlice.actions;
 
 export default productsSlice.reducer;

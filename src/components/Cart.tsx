@@ -2,15 +2,19 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { ProductModel } from '../shared/models/products.model';
-import { addItemToCart } from '../store/features/cart/cartSlice';
+import {
+  addItemToCart,
+  setToggleLogin,
+} from '../store/features/cart/cartSlice';
 import Modal from './Modal';
-import Cookies from 'js-cookie';
 
 const Cart = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
 
   const items = useAppSelector((state) => state.cart.items);
+
+  const isLogged = useAppSelector((state) => state.cart.logged);
 
   const calculatePrice = (item: ProductModel) =>
     (item.quantity! * parseFloat(item.variants[0].price)).toFixed(2);
@@ -29,7 +33,16 @@ const Cart = () => {
     setIsOpen((oldValue) => !oldValue);
   };
 
+  const handleProceed = () => {
+    dispatch(setToggleLogin(isLogged ? false : true));
+  };
+
   const maxSelItems = useAppSelector((state) => state.cart.maxSelectableItems);
+
+  const checkIfProceed = () =>
+    items.length === 0
+      ? 'pointer-events-none opacity-75 grayscale'
+      : ' hover:bg-indigo-600';
 
   const handleChangeQuantity = (item: ProductModel, q: string) => {
     const quantity = parseInt(q);
@@ -40,36 +53,36 @@ const Cart = () => {
     <div className="bg-white">
       <div className="container mx-auto mt-10">
         <div className="grid xs:grid-cols-1 md:grid-cols-12 my-10">
-          <div className="bg-white col-span-1 sm:col-span-1 md:col-span-9 px-10 py-10">
+          <div className="bg-white col-span-1 sm:col-span-1 md:col-span-9 px-5 py-5 md:px-10 md:py-10">
             <div className="flex justify-between border-b pb-8">
               <h1 className="font-semibold text-2xl">Carrello</h1>
               <h2 className="font-semibold text-2xl">
-                {items.length} Prodotti
+                {items.length} Prodott{items.length === 1 ? 'o' : 'i'}
               </h2>
             </div>
             <div>
               {items.length > 0 ? (
                 <div>
-                  <div className="flex mt-10 mb-5">
+                  <div className="md:flex mt-10 mb-5 hidden">
                     <h3 className="font-semibold text-gray-600 text-xs uppercase w-2/5">
                       Dettaglio prodotto
                     </h3>
                     <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 text-center">
                       Quantità
                     </h3>
-                    <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 text-center">
+                    <h3 className="font-semibold text-right text-gray-600 text-xs uppercase w-1/5 text-center">
                       Prezzo
                     </h3>
-                    <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 text-center">
+                    <h3 className="font-semibold text-right text-gray-600 text-xs uppercase w-1/5 text-center">
                       Totale
                     </h3>
                   </div>
                   {items.map((item: ProductModel) => (
                     <div
                       key={item.id}
-                      className="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5"
+                      className="sm:flex items-center hover:bg-gray-100 px-2 sm:px-0 py-2 sm:py-5"
                     >
-                      <div className="flex w-2/5">
+                      <div className="flex sm:mb-0 mb-5 sm:w-2/5 xs:w-full">
                         <div className="w-20 h-full lg:w-20 lg:h-full">
                           <img
                             className="h-24 object-cover"
@@ -95,9 +108,9 @@ const Cart = () => {
                           </span>
                         </div>
                       </div>
-                      <div className="flex justify-center w-1/5">
+                      <div className="flex mb-5 sm:mb-0 sm:justify-center w-1/5">
                         <select
-                          className="mx-2 border text-center w-15"
+                          className="sm:mx-2 border text-center w-15"
                           value={item.quantity}
                           onChange={(e) =>
                             handleChangeQuantity(item, e.target.value)
@@ -108,10 +121,10 @@ const Cart = () => {
                           ))}
                         </select>
                       </div>
-                      <span className="text-center w-1/5 font-semibold text-sm">
+                      <span className="flex sm:inline justify-end text-right w-1/5 font-semibold text-sm">
                         €{item.variants[0].price}
                       </span>
-                      <span className="text-center w-1/5 font-semibold text-sm">
+                      <span className="flex sm:inline justify-end text-right w-1/5 font-semibold text-sm">
                         (x {item.quantity}) €{calculatePrice(item)}
                       </span>
                       <Modal
@@ -148,26 +161,16 @@ const Cart = () => {
             </h1>
             <div className="flex justify-between mt-10 mb-5">
               <span className="font-semibold text-sm uppercase">
-                {items.length} Prodotti
+                {items.length} Prodott{items.length === 1 ? 'o' : 'i'}
               </span>
               <span className="font-semibold text-sm">€{cartTotal}</span>
             </div>
-            <div>
-              <label className="font-medium inline-block mb-3 text-sm uppercase">
-                spedizione
-              </label>
-              <select className="block p-2 text-gray-600 w-full text-sm">
-                <option>Corriere Standard - €0,00</option>
-                <option>Corriere Espresso - €10,00</option>
-              </select>
-            </div>
-            <div className="border-t mt-8">
-              <div className="flex font-semibold justify-between py-6 text-sm uppercase">
-                <span>Total cost</span>
-                <span>€{cartTotal}</span>
-              </div>
-              <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">
-                Checkout
+            <div className="border-t mt-12">
+              <button
+                onClick={() => handleProceed()}
+                className={`bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full ${checkIfProceed()}`}
+              >
+                Procedi al pagamento
               </button>
             </div>
           </div>

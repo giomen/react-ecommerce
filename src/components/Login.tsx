@@ -1,20 +1,46 @@
-import React from 'react';
-import { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
-import { LockClosedIcon } from '@heroicons/react/solid';
+import { Fragment, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { setLogInfo } from '../store/features/cart/cartSlice';
 
 const Login = () => {
   const [open, setOpen] = useState(false);
+  const [remember, setRemember] = useState(false);
+  const isLogged = useAppSelector((state) => state.cart.logged);
+  const toggleLogin = useAppSelector((state) => state.cart.toggleLogin);
+  const dispatch = useAppDispatch();
+
+  const handleButtonLogin = () => {
+    if (isLogged) {
+      dispatch(setLogInfo({ logged: false }));
+      setOpen(false);
+    } else {
+      setOpen(true);
+    }
+  };
+
+  const handleLogin = () => {
+    dispatch(setLogInfo({ logged: true, remember }));
+    setOpen(false);
+  };
+
+  const handleRemember = (value: boolean) => {
+    setRemember(value);
+  };
+
+  useEffect(() => {
+    setOpen(toggleLogin);
+  }, [toggleLogin]);
 
   return (
     <>
       <div
-        onClick={() => setOpen((oldState) => !oldState)}
+        onClick={() => handleButtonLogin()}
         className="ml-8 whitespace-nowrap text-base font-medium text-indigo-500 hover:text-indigo-600 cursor-pointer"
       >
-        Login
+        {isLogged ? 'Logout' : 'Login'}
       </div>
       <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -58,7 +84,7 @@ const Login = () => {
                           className="rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
                           onClick={() => setOpen(false)}
                         >
-                          <span className="sr-only">Close panel</span>
+                          <span className="sr-only">Chiudi</span>
                           <XIcon className="h-6 w-6" aria-hidden="true" />
                         </button>
                       </div>
@@ -67,30 +93,7 @@ const Login = () => {
                       <div className="relative mt-6 flex-1 px-4 sm:px-6">
                         <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                           <div className="max-w-md w-full space-y-8">
-                            <div>
-                              <img
-                                className="mx-auto h-12 w-auto"
-                                src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-                                alt="Workflow"
-                              />
-                              <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                                Sign in to your account
-                              </h2>
-                              <p className="mt-2 text-center text-sm text-gray-600">
-                                Or{' '}
-                                <a
-                                  href="#"
-                                  className="font-medium text-indigo-600 hover:text-indigo-500"
-                                >
-                                  start your 14-day free trial
-                                </a>
-                              </p>
-                            </div>
-                            <form
-                              className="mt-8 space-y-6"
-                              action="#"
-                              method="POST"
-                            >
+                            <form className="mt-8 space-y-6">
                               <input
                                 type="hidden"
                                 name="remember"
@@ -102,7 +105,7 @@ const Login = () => {
                                     htmlFor="email-address"
                                     className="sr-only"
                                   >
-                                    Email address
+                                    Email
                                   </label>
                                   <input
                                     id="email-address"
@@ -136,13 +139,16 @@ const Login = () => {
                                     id="remember-me"
                                     name="remember-me"
                                     type="checkbox"
+                                    onChange={(e) =>
+                                      handleRemember(e.target.checked)
+                                    }
                                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                                   />
                                   <label
                                     htmlFor="remember-me"
                                     className="ml-2 block text-sm text-gray-900"
                                   >
-                                    Remember me
+                                    Ricordami
                                   </label>
                                 </div>
 
@@ -157,18 +163,14 @@ const Login = () => {
                               </div>
 
                               <div>
-                                <button
-                                  type="submit"
+                                {/** ho tolto il submit per evitare side effect */}
+                                <div
+                                  onClick={() => handleLogin()}
                                   className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                 >
-                                  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                                    <LockClosedIcon
-                                      className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
-                                      aria-hidden="true"
-                                    />
-                                  </span>
-                                  Sign in
-                                </button>
+                                  <span className="absolute left-0 inset-y-0 flex items-center pl-3"></span>
+                                  Login
+                                </div>
                               </div>
                             </form>
                           </div>

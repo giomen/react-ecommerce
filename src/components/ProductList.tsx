@@ -7,7 +7,10 @@ import {
   ROUTE_PATHS,
 } from '../shared/app-constants';
 import { ProductInCollection } from '../shared/models/products.model';
-import { getProductsInCollection } from '../store/features/products/productsSlice';
+import {
+  getProductsInCollection,
+  sortByName,
+} from '../store/features/products/productsSlice';
 
 const ProductList = () => {
   const { id } = useParams();
@@ -23,17 +26,29 @@ const ProductList = () => {
     );
   }, [id, dispatch]);
 
-  const products = useAppSelector((state) => state.products.products);
+  let products = useAppSelector((state) => state.products.products);
   const activeCollection = useAppSelector(
     (state) => state.collections?.activeCollection
   );
 
+  const handleSort = () => {
+    dispatch(sortByName());
+  };
+
   return (
     <div className="bg-white">
       <div className="max-w-2xl mx-auto py-0 px-4 sm:py-8 sm:px-6 lg:max-w-7xl lg:px-8">
-        <h2 className="text-2xl font-extrabold tracking-tight text-gray-900">
-          {activeCollection?.name}
-        </h2>
+        <div className="flex justify-between">
+          <h2 className="text-2xl font-extrabold tracking-tight text-gray-900">
+            {activeCollection?.name}
+          </h2>
+          <div
+            className="cursor-pointer text-16 text-indigo-500"
+            onClick={() => handleSort()}
+          >
+            Ordina per nome
+          </div>
+        </div>
 
         <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {products.map((product: ProductInCollection) => (
