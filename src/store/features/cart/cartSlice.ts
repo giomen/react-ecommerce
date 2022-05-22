@@ -32,8 +32,9 @@ export const cartSlice = createSlice({
             item.title === existItem.title ? newItem : item
           )
         : [...state.items, newItem];
-      Cookies.set('cartItems', JSON.stringify(cartItems), { expires: 1 });
       state.items = cartItems;
+      const cookieItems = cartItems;
+      Cookies.set('cartItems', JSON.stringify(cookieItems), { expires: 1 });
     },
     removeItemFromCart: (state: CartState, actions: PayloadAction<number>) => {
       const cartItems = state.items.filter(

@@ -10,12 +10,12 @@ const Login = () => {
 
   return (
     <>
-      <button
+      <div
         onClick={() => setOpen((oldState) => !oldState)}
-        className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-base font-medium text-white bg-indigo-500 hover:bg-indigo-600"
+        className="ml-8 whitespace-nowrap text-base font-medium text-indigo-500 hover:text-indigo-600 cursor-pointer"
       >
         Login
-      </button>
+      </div>
       <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={setOpen}>
           <Transition.Child

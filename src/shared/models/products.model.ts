@@ -21,6 +21,8 @@ export interface ProductModel {
   collectionId: number;
 }
 
+export type ProductInCollection = Omit<ProductModel, 'variants'>;
+
 export interface Variant {
   id: number;
   product_id: number;

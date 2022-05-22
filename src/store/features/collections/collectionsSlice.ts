@@ -4,6 +4,7 @@ import {
   CollectionListingResponse,
 } from '../../../shared/models/collectionListing.model';
 import { StatusType } from '../../../shared/models/status.enum';
+import Cookies from 'js-cookie';
 
 export interface CollectionsIdentifier {
   id: number;
@@ -20,7 +21,9 @@ export interface CollectionsState {
 const initialState = {
   status: StatusType.IDLE,
   collections: [],
-  activeCollection: null,
+  activeCollection: Cookies.get('ActiveCollection')
+    ? JSON.parse(Cookies.get('ActiveCollection')!)
+    : null,
   collectionsNames: [],
 } as CollectionsState;
 
@@ -40,12 +43,19 @@ export const collectionSlice = createSlice({
       state: CollectionsState,
       actions: PayloadAction<number>
     ) => {
-      const elem = state.collections.filter(
+      const elem = state.collections.find(
         (item) => item.collection_id === actions.payload
       );
+      Cookies.set(
+        'ActiveCollection',
+        JSON.stringify({
+          id: elem!.collection_id,
+          name: elem!.title,
+        })
+      );
       state.activeCollection = {
-        id: elem[0].collection_id,
-        name: elem[0].title,
+        id: elem!.collection_id,
+        name: elem!.title,
       };
     },
   },

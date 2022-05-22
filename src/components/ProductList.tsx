@@ -6,7 +6,7 @@ import {
   PARTIAL_ROUTE_PATHS,
   ROUTE_PATHS,
 } from '../shared/app-constants';
-import { ProductModel } from '../shared/models/products.model';
+import { ProductInCollection } from '../shared/models/products.model';
 import { getProductsInCollection } from '../store/features/products/productsSlice';
 
 const ProductList = () => {
@@ -36,7 +36,7 @@ const ProductList = () => {
         </h2>
 
         <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-          {products.map((product: ProductModel) => (
+          {products.map((product: ProductInCollection) => (
             <div key={product.id} className="group relative">
               <div className="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80 lg:aspect-none">
                 <img
@@ -60,14 +60,16 @@ const ProductList = () => {
                     {product.vendor}
                   </p>
                 </div>
-                <p className="text-sm font-medium text-gray-900">
-                  {product.product_type}
-                </p>
-                {product.tags.split(', ').map((tag: string) => (
-                  <p key={tag} className="text-xs text-sky-600">
-                    {tag}
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    {product.product_type}
                   </p>
-                ))}
+                  {product.tags.split(', ').map((tag: string) => (
+                    <p key={tag} className="text-xs text-sky-600">
+                      {tag}
+                    </p>
+                  ))}
+                </div>
               </div>
             </div>
           ))}

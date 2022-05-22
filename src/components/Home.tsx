@@ -22,7 +22,7 @@ const Home = () => {
     dispatch(setActiveCollection(id));
 
   return (
-    <div className="bg-white lg:h-screen flex items-center">
+    <div className="bg-white lg:h-screen flex xs:items-center">
       <div className="max-w-2xl mx-auto py-0 px-4 sm:py-8 sm:px-6 lg:max-w-7xl lg:px-8">
         <div className="sm:text-center lg:text-left">
           <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">

@@ -13,12 +13,12 @@ const Cart = () => {
   const items = useAppSelector((state) => state.cart.items);
 
   const calculatePrice = (item: ProductModel) =>
-    item.quantity! * parseFloat(item.variants[0].price);
+    (item.quantity! * parseFloat(item.variants[0].price)).toFixed(2);
 
   const cartTotal = useAppSelector((state) => {
     let partialTotal = 0;
     state.cart.items.forEach((item) => {
-      partialTotal += calculatePrice(item);
+      partialTotal += parseFloat(calculatePrice(item));
     });
     return partialTotal;
   });
@@ -35,8 +35,6 @@ const Cart = () => {
     const quantity = parseInt(q);
     return dispatch(addItemToCart({ ...item, quantity }));
   };
-
-  console.log('cookies: ', Cookies.get());
 
   return (
     <div className="bg-white">
