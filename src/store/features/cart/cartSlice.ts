@@ -54,6 +54,10 @@ export const cartSlice = createSlice({
       Cookies.set('cartItems', JSON.stringify(cartItems), { expires: 1 });
       state.items = cartItems;
     },
+    clearCart: (state: CartState) => {
+      Cookies.remove('cartItems');
+      state.items = [];
+    },
     updateQuantity: (
       state: CartState,
       actions: PayloadAction<{ id: number; quantity: number }>
@@ -63,7 +67,12 @@ export const cartSlice = createSlice({
   },
 });
 
-export const { setLogInfo, addItemToCart, removeItemFromCart, setToggleLogin } =
-  cartSlice.actions;
+export const {
+  setLogInfo,
+  addItemToCart,
+  removeItemFromCart,
+  clearCart,
+  setToggleLogin,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

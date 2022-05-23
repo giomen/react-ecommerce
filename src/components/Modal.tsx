@@ -1,31 +1,43 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Dialog, Transition } from '@headlessui/react';
-import { ExclamationIcon } from '@heroicons/react/outline';
+import {
+  ExclamationIcon,
+  InformationCircleIcon,
+} from '@heroicons/react/outline';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from '../hooks';
 import { removeItemFromCart } from '../store/features/cart/cartSlice';
 
 export interface ModalProps {
   isOpen: boolean;
-  itemId: number;
-  setIsOpen: () => void;
+  itemId?: number;
+  setIsOpen: any;
+  title: string;
+  description: string;
+  fullAction: boolean;
+  confirmBtnText: string;
 }
 
 const Modal = (props: ModalProps) => {
-  const { isOpen, itemId, setIsOpen } = props;
+  const {
+    isOpen,
+    itemId,
+    setIsOpen,
+    title,
+    description,
+    fullAction,
+    confirmBtnText,
+  } = props;
   const [open, setOpen] = useState(false);
 
   const cancelButtonRef = useRef(null);
-
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
 
   const handleRemoveItem = () => {
-    dispatch(removeItemFromCart(itemId));
-    setIsOpen();
+    itemId ? setIsOpen(itemId) : setIsOpen(0);
   };
 
   return (
@@ -62,9 +74,9 @@ const Modal = (props: ModalProps) => {
               <Dialog.Panel className="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full">
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
-                    <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                      <ExclamationIcon
-                        className="h-6 w-6 text-red-600"
+                    <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 sm:mx-0 sm:h-10 sm:w-10">
+                      <InformationCircleIcon
+                        className="h-6 w-6 text-indigo-600"
                         aria-hidden="true"
                       />
                     </div>
@@ -73,31 +85,31 @@ const Modal = (props: ModalProps) => {
                         as="h3"
                         className="text-lg leading-6 font-medium text-gray-900"
                       >
-                        Rimuovi prodotto dal carrello
+                        {title}
                       </Dialog.Title>
                       <div className="mt-2">
-                        <p className="text-sm text-gray-500">
-                          Sei sicuro di voler rimuovere gli articoli?
-                        </p>
+                        <p className="text-sm text-gray-500">{description}</p>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                  {fullAction && (
+                    <button
+                      type="button"
+                      className="mt-3 w-full inline-flex justify-center border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                      onClick={() => setIsOpen(itemId)}
+                      ref={cancelButtonRef}
+                    >
+                      Cancel
+                    </button>
+                  )}
                   <button
                     type="button"
-                    className="mt-3 w-full inline-flex justify-center border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                    onClick={() => setIsOpen()}
-                    ref={cancelButtonRef}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    className="w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 bg-indigo-500 text-base font-medium text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    className="w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 bg-indigo-500 text-base font-medium text-white hover:bg-indigo-600 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
                     onClick={() => handleRemoveItem()}
                   >
-                    Rimuovi
+                    {confirmBtnText}
                   </button>
                 </div>
               </Dialog.Panel>

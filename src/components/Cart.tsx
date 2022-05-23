@@ -4,9 +4,11 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { ProductModel } from '../shared/models/products.model';
 import {
   addItemToCart,
+  clearCart,
+  removeItemFromCart,
   setToggleLogin,
 } from '../store/features/cart/cartSlice';
-import Modal from './Modal';
+import ModalWrapper from './ModalWrapper';
 
 const Cart = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +29,10 @@ const Cart = () => {
     return partialTotal;
   });
 
-  const handleModal = () => setIsOpen((oldValue) => !oldValue);
+  const handleRemoveItemModal = (id: number) => {
+    dispatch(removeItemFromCart(id));
+    setIsOpen((oldValue) => !oldValue);
+  };
 
   const handleRemoveItemFromCart = () => {
     setIsOpen((oldValue) => !oldValue);
@@ -35,6 +40,13 @@ const Cart = () => {
 
   const handleProceed = () => {
     dispatch(setToggleLogin(isLogged ? false : true));
+    console.log('isLogged: ', isLogged, isOpen);
+    isLogged && setIsOpen((oldValue) => !oldValue);
+  };
+
+  const handleCheckoutModal = () => {
+    dispatch(clearCart());
+    setIsOpen((oldValue) => !oldValue);
   };
 
   const maxSelItems = useAppSelector((state) => state.cart.maxSelectableItems);
@@ -127,10 +139,14 @@ const Cart = () => {
                       <span className="flex sm:inline justify-end text-right w-1/5 font-semibold text-sm">
                         (x {item.quantity}) €{calculatePrice(item)}
                       </span>
-                      <Modal
+                      <ModalWrapper
                         isOpen={isOpen}
                         itemId={item.id}
-                        setIsOpen={handleModal}
+                        setIsOpen={handleRemoveItemModal}
+                        title="Rimuovi prodotto dal carrello"
+                        description="Sei sicuro di voler rimuovere gli articoli?"
+                        fullAction={true}
+                        confirmBtnText="Rimuovi"
                       />
                     </div>
                   ))}
@@ -173,6 +189,14 @@ const Cart = () => {
                 Procedi al pagamento
               </button>
             </div>
+            <ModalWrapper
+              isOpen={isOpen}
+              setIsOpen={handleCheckoutModal}
+              title="Pagamento Effettuato"
+              description="Grazie per l'acquisto"
+              fullAction={false}
+              confirmBtnText="chiudi"
+            />
           </div>
         </div>
       </div>
